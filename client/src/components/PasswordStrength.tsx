@@ -1,5 +1,4 @@
-import React from "react"
-import { Box, Icon, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
 import CheckIcon from "@mui/icons-material/Check"
 
