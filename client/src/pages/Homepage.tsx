@@ -13,6 +13,9 @@ import {
 import Logo from "../assets/dps.png"
 import axios, { AxiosError } from "axios"
 import dpsButton from "../assets/dps_button.svg"
+import PasswordStrength, {
+  PasswordStrengthEnum,
+} from "../components/PasswordStrength"
 
 const StyledTextfield = styled(TextField)({
   input: { color: "white" },
@@ -88,14 +91,7 @@ function Homepage() {
   }
 
   const validPassword = () => {
-    return (
-      hasLength &&
-      hasLatinLetter &&
-      hasUpperCase &&
-      hasDigit &&
-      hasSpecialChar &&
-      passwordsMatch()
-    )
+    return hasLength && hasLatinLetter && hasDigit && passwordsMatch()
   }
 
   const handleValidation = async () => {
@@ -107,6 +103,34 @@ function Homepage() {
     } else {
       alert("Password is invalid")
     }
+  }
+
+  const passwordStrength = () => {
+    if (!password) return PasswordStrengthEnum.WEAK
+
+    let strength = 0
+    if (hasLength && hasLatinLetter && hasDigit) {
+      strength++
+
+      if (hasUpperCase) {
+        strength++
+      }
+      if (hasSpecialChar) {
+        strength++
+      }
+    }
+
+    if (strength === 0) {
+      return PasswordStrengthEnum.WEAK
+    } else if (strength === 1) {
+      return PasswordStrengthEnum.MEDIUM
+    } else if (strength === 2) {
+      return PasswordStrengthEnum.STRONG
+    } else if (strength === 3) {
+      return PasswordStrengthEnum.FULL
+    }
+
+    return PasswordStrengthEnum.WEAK
   }
 
   return (
@@ -202,6 +226,7 @@ function Homepage() {
             },
           }}
         />
+        <PasswordStrength passwordStrength={passwordStrength()} />
 
         <List sx={{ listStyleType: "disc", pl: 2 }}>
           <ListItem
@@ -229,34 +254,12 @@ function Homepage() {
           <ListItem
             sx={{
               display: "list-item",
-              "::marker": { color: hasUpperCase ? "green" : "red" },
-              px: 0,
-            }}
-          >
-            <Typography color={hasUpperCase ? "green" : "red"}>
-              Password must contain at least one uppercase letter
-            </Typography>
-          </ListItem>
-          <ListItem
-            sx={{
-              display: "list-item",
               "::marker": { color: hasDigit ? "green" : "red" },
               px: 0,
             }}
           >
             <Typography color={hasDigit ? "green" : "red"}>
               Password must contain at least one digit
-            </Typography>
-          </ListItem>
-          <ListItem
-            sx={{
-              display: "list-item",
-              "::marker": { color: hasSpecialChar ? "green" : "red" },
-              px: 0,
-            }}
-          >
-            <Typography color={hasSpecialChar ? "green" : "red"}>
-              Password must contain at least one special character{" "}
             </Typography>
           </ListItem>
         </List>
