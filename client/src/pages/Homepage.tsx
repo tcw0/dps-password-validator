@@ -117,7 +117,7 @@ function Homepage() {
     } else if (strength === 2) {
       return PasswordStrengthEnum.STRONG
     } else if (strength === 3) {
-      return PasswordStrengthEnum.FULL
+      return PasswordStrengthEnum.COMPLETE
     }
 
     return PasswordStrengthEnum.WEAK

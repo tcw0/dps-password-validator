@@ -6,7 +6,7 @@ export enum PasswordStrengthEnum {
   WEAK = "Weak",
   MEDIUM = "Medium",
   STRONG = "Strong",
-  FULL = "Strong",
+  COMPLETE = "Complete",
 }
 
 function PasswordStrength({
@@ -26,7 +26,7 @@ function PasswordStrength({
       case PasswordStrengthEnum.STRONG:
         icon = CheckIcon
         break
-      case PasswordStrengthEnum.FULL:
+      case PasswordStrengthEnum.COMPLETE:
         icon = CheckIcon
         break
     }
@@ -52,7 +52,7 @@ function PasswordStrength({
       case PasswordStrengthEnum.STRONG:
         result = [COLORS.STRONG, COLORS.STRONG, COLORS.STRONG, COLORS.NEUTRAL]
         break
-      case PasswordStrengthEnum.FULL:
+      case PasswordStrengthEnum.COMPLETE:
         result = [COLORS.STRONG, COLORS.STRONG, COLORS.STRONG, COLORS.STRONG]
         break
     }
