@@ -1,6 +1,6 @@
 # dps-password-validator
 
-This repository contains the implementation of a password validator, a technical challenge for the DPS Software Engineer track. The validator solely runs in the frontend.
+This repository contains the implementation of a password validator, a technical challenge for the DPS Software Engineer track.
 
 ## Project Structure
 
@@ -9,7 +9,7 @@ This project structure focuses on the most important files in this project.
 ```
 dps-password-validator
 ├── README.md
-├── client
+└── client
     ├── node_modules        -> installed node modules (do not touch)
     └── src
         ├── assets          -> assets such as images & logos
@@ -23,12 +23,9 @@ dps-password-validator
 
 This web application provides a user-friendly interface for validating passwords based on specific criteria. The password validation is handled entirely on the frontend leveraging React, Typescript, Material-UI, and Vite.
 
-This project leverages the MERN (MongoDB, Express.js, React, Node.js) Stack, a powerful combination of technologies, to build a comprehensive messenger application. The architecture is divided into the server side, where MongoDB, Node.js, and Express handle the backend, and the client side, where Typescript, React, and Material-UI contribute to a dynamic and user-friendly frontend.
-
 ### Environmnet variables
 
-The necessary environment variables can be found in `.env` in `client`.
-The secrets are intentionally shared for ease of setup. Contact one of the maintainers of the project for further access to the secrets.
+The necessary environment variables can be found in `.env` in `client`. The secrets are intentionally shared for ease of setup.
 
 The following environment variables are necessary to run the application:
 
