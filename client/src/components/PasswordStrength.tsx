@@ -7,7 +7,7 @@ export enum PasswordStrengthEnum {
   WEAK = "Weak",
   MEDIUM = "Medium",
   STRONG = "Strong",
-  FULL = "Full",
+  FULL = "Strong",
 }
 
 function PasswordStrength({

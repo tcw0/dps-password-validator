@@ -40,6 +40,11 @@ function Homepage() {
     }
 
     for (const word of words) {
+      // Skip words that are too short to avoid unnecessary invalid passwords (e.g. "ca1tapult" would be invalid because "ca" is received as the abbreviation for California)
+      if (word.length < 3) {
+        continue
+      }
+
       const options = {
         method: "GET",
         url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
@@ -59,7 +64,6 @@ function Homepage() {
           return true
         }
       } catch (error) {
-        // Handle API request error
         if (
           axios.isAxiosError(error) &&
           (error as AxiosError).response?.status === 404
