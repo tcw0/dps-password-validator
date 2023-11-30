@@ -1,6 +1,6 @@
 import React from "react"
 import { Box, Stack, List, ListItem, Typography } from "@mui/material"
-import Logo from "../assets/dps.png"
+import Logo from "../assets/dps.svg"
 import axios, { AxiosError } from "axios"
 import dpsButton from "../assets/dps_button.svg"
 import PasswordStrength, {
@@ -149,7 +149,7 @@ function Homepage() {
           }}
           p={1}
           src={Logo}
-          width={"80%"}
+          width={"90%"}
           mb={2}
         />
         <StyledTextfield
