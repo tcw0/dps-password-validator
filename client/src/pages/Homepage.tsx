@@ -27,34 +27,34 @@ function Homepage() {
   const [repeatPasswordFocused, setRepeatPasswordFocused] =
     React.useState(false)
 
-  const hasLengthError = password.length < 8 || password.length > 16
-  const hasLowerCaseError = !password.match(/[a-z]/)
-  const hasUpperCaseError = !password.match(/[A-Z]/)
-  const hasDigitError = !password.match(/[0-9]/)
-  const hasSpecialCharError = !password.match(/[^A-Za-z0-9]/)
+  const hasLength = password.length >= 8 && password.length <= 16
+  const hasLattinLetter = password.match(/[A-Za-z]/)
+  const hasUpperCase = password.match(/[A-Z]/)
+  const hasDigit = password.match(/[0-9]/)
+  const hasSpecialChar = password.match(/[^A-Za-z0-9]/)
 
   const passwordRules = () => {
     return (
       <Box width={"fit-content"}>
-        {hasLengthError && (
+        {!hasLength && (
           <Typography>
-            Password must be at between 8 and 16 characters long
+            Password must be between 8 and 16 characters long
           </Typography>
         )}
-        {hasLowerCaseError && (
+        {!hasLattinLetter && (
           <Typography>
             Password must contain at least one lowercase letter
           </Typography>
         )}
-        {hasUpperCaseError && (
+        {!hasUpperCase && (
           <Typography>
             Password must contain at least one uppercase letter
           </Typography>
         )}
-        {hasDigitError && (
+        {!hasDigit && (
           <Typography>Password must contain at least one digit</Typography>
         )}
-        {hasSpecialCharError && (
+        {!hasSpecialChar && (
           <Typography>
             Password must contain at least one special character{" "}
           </Typography>
@@ -119,11 +119,11 @@ function Homepage() {
           }}
           error={
             (passwordFocused || password.length > 0) &&
-            (hasLengthError ||
-              hasLowerCaseError ||
-              hasUpperCaseError ||
-              hasDigitError ||
-              hasSpecialCharError)
+            (!hasLength ||
+              !hasLattinLetter||
+              !hasUpperCase ||
+              !hasDigit ||
+              !hasSpecialChar)
           }
           onFocus={() => {
             setPasswordFocused(true)
@@ -170,7 +170,9 @@ function Homepage() {
           sx={{
             "& .MuiOutlinedInput-root": {
               "&:hover": {
-                fieldset: { borderColor: !repeatPasswordFocused ? "#1976d2" : "" },
+                fieldset: {
+                  borderColor: !repeatPasswordFocused ? "#1976d2" : "",
+                },
               },
             },
           }}
@@ -180,55 +182,55 @@ function Homepage() {
           <ListItem
             sx={{
               display: "list-item",
-              "::marker": { color: hasLengthError ? "red" : "green" },
+              "::marker": { color: hasLength ? "green" : "red" },
               px: 0,
             }}
           >
-            <Typography color={hasLengthError ? "red" : "green"}>
+            <Typography color={hasLength ? "green" : "red"}>
               Password must be at between 8 and 16 characters long
             </Typography>
           </ListItem>
           <ListItem
             sx={{
               display: "list-item",
-              "::marker": { color: hasLowerCaseError ? "red" : "green" },
+              "::marker": { color: hasLattinLetter ? "green" : "red" },
               px: 0,
             }}
           >
-            <Typography color={hasLowerCaseError ? "red" : "green"}>
+            <Typography color={hasLattinLetter ? "green" : "red"}>
               Password must contain at least one lowercase letter
             </Typography>
           </ListItem>
           <ListItem
             sx={{
               display: "list-item",
-              "::marker": { color: hasUpperCaseError ? "red" : "green" },
+              "::marker": { color: hasUpperCase ? "green" : "red" },
               px: 0,
             }}
           >
-            <Typography color={hasUpperCaseError ? "red" : "green"}>
+            <Typography color={hasUpperCase ? "green" : "red"}>
               Password must contain at least one uppercase letter
             </Typography>
           </ListItem>
           <ListItem
             sx={{
               display: "list-item",
-              "::marker": { color: hasDigitError ? "red" : "green" },
+              "::marker": { color: hasDigit ? "green" : "red" },
               px: 0,
             }}
           >
-            <Typography color={hasDigitError ? "red" : "green"}>
+            <Typography color={hasDigit ? "green" : "red"}>
               Password must contain at least one digit
             </Typography>
           </ListItem>
           <ListItem
             sx={{
               display: "list-item",
-              "::marker": { color: hasSpecialCharError ? "red" : "green" },
+              "::marker": { color: hasSpecialChar ? "green" : "red" },
               px: 0,
             }}
           >
-            <Typography color={hasSpecialCharError ? "red" : "green"}>
+            <Typography color={hasSpecialChar ? "green" : "red"}>
               Password must contain at least one special character{" "}
             </Typography>
           </ListItem>
