@@ -1,29 +1,15 @@
 import React from "react"
-import {
-  Box,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-  styled,
-  List,
-  ListItem,
-  Button,
-} from "@mui/material"
+import { Box, Stack, List } from "@mui/material"
 import Logo from "../assets/dps.png"
 import axios, { AxiosError } from "axios"
 import dpsButton from "../assets/dps_button.svg"
 import PasswordStrength, {
   PasswordStrengthEnum,
 } from "../components/PasswordStrength"
-
-const StyledTextfield = styled(TextField)({
-  input: { color: "white" },
-  fieldset: {
-    borderColor: "white",
-  },
-  label: { color: "white" },
-})
+import {
+  StyledListItemWithTypography,
+  StyledTextfield,
+} from "../components/StyledComponents"
 
 function Homepage() {
   const [password, setPassword] = React.useState("")
@@ -229,59 +215,39 @@ function Homepage() {
         <PasswordStrength passwordStrength={passwordStrength()} />
 
         <List sx={{ listStyleType: "disc", pl: 2 }}>
-          <ListItem
-            sx={{
-              display: "list-item",
-              "::marker": { color: hasLength ? "green" : "red" },
-              px: 0,
-            }}
-          >
-            <Typography color={hasLength ? "green" : "red"}>
-              Password must be between 8 and 16 characters long
-            </Typography>
-          </ListItem>
-          <ListItem
-            sx={{
-              display: "list-item",
-              "::marker": { color: hasLatinLetter ? "green" : "red" },
-              px: 0,
-            }}
-          >
-            <Typography color={hasLatinLetter ? "green" : "red"}>
-              Password must contain letters of the latin alphabet
-            </Typography>
-          </ListItem>
-          <ListItem
-            sx={{
-              display: "list-item",
-              "::marker": { color: hasDigit ? "green" : "red" },
-              px: 0,
-            }}
-          >
-            <Typography color={hasDigit ? "green" : "red"}>
-              Password must contain at least one digit
-            </Typography>
-          </ListItem>
+          <StyledListItemWithTypography
+            hasIndicator={hasLength}
+            text="Password must be between 8 and 16 characters long"
+          />
+          <StyledListItemWithTypography
+            hasIndicator={hasLatinLetter}
+            text="Password must contain letters of the latin alphabet"
+          />
+          <StyledListItemWithTypography
+            hasIndicator={hasDigit}
+            text="Password must contain at least one digit"
+          />
         </List>
+        <Box
+          component={"img"}
+          sx={{
+            borderRadius: 1.5,
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "transform 0.3s ease-in-out",
+            "&:hover": {
+              transform: "scale(1.2)",
+            },
+            cursor: validPassword() ? "pointer" : "default",
+            filter: validPassword() ? "none" : "grayscale(100%)",
+          }}
+          p={1}
+          src={dpsButton}
+          alt="Validate Password"
+          onClick={validPassword() ? handleValidation : undefined}
+          width={"80%"}
+        />
       </Box>
-      <Box
-        component={"img"}
-        sx={{
-          borderRadius: 1.5,
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "transform 0.3s ease-in-out",
-          "&:hover": {
-            transform: "scale(1.2)",
-          },
-          cursor: validPassword() ? "pointer" : "default",
-          filter: validPassword() ? "none" : "grayscale(100%)",
-        }}
-        p={1}
-        src={dpsButton}
-        alt="Validate Password"
-        onClick={validPassword() ? handleValidation : undefined}
-      />
     </Stack>
   )
 }
