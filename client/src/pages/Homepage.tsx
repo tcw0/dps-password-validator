@@ -13,7 +13,9 @@ import Logo from "../assets/dps.png"
 
 const StyledTextfield = styled(TextField)({
   input: { color: "white" },
-  fieldset: { borderColor: "white" },
+  fieldset: {
+    borderColor: "white",
+  },
   label: { color: "white" },
 })
 
@@ -68,7 +70,7 @@ function Homepage() {
   return (
     <Stack
       sx={{
-        background: "linear-gradient(45deg, #080021, #0a0b64)",
+        background: "linear-gradient(56deg, #0a0023 81%, #0a0b6b)",
         width: "100%",
         height: "100vh",
         display: "flex",
@@ -76,7 +78,21 @@ function Homepage() {
         justifyContent: "center",
       }}
     >
-      <Box display={"flex"} flexDirection={"column"} mx={3}>
+      <Typography
+        width={"fit-content"}
+        fontSize={"50px"}
+        textAlign={"center"}
+        color={"#b1448b"}
+        fontWeight={"bold"}
+      >
+        Password Validator
+      </Typography>
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+        mx={3}
+      >
         <Box
           component={"img"}
           sx={{
@@ -86,7 +102,7 @@ function Homepage() {
           }}
           p={1}
           src={Logo}
-          width={"100%"}
+          width={"80%"}
         />
         <StyledTextfield
           label="Password"
@@ -109,18 +125,19 @@ function Homepage() {
               hasDigitError ||
               hasSpecialCharError)
           }
-          //   helperText={passwordRules()}
           onFocus={() => {
             setPasswordFocused(true)
           }}
           onBlur={() => {
             setPasswordFocused(false)
           }}
-          //   sx={{
-          //     input: { color: "white" },
-          //     fieldset: { borderColor: "white" },
-          //     label: { color: "white" },
-          //   }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&:hover": {
+                fieldset: { borderColor: !passwordFocused ? "#1976d2" : "" },
+              },
+            },
+          }}
         />
         <StyledTextfield
           label="Repeat Password"
@@ -149,6 +166,13 @@ function Homepage() {
           }}
           onBlur={() => {
             setRepeatPasswordFocused(false)
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&:hover": {
+                fieldset: { borderColor: !repeatPasswordFocused ? "#1976d2" : "" },
+              },
+            },
           }}
         />
 
