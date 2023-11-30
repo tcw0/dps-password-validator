@@ -8,9 +8,11 @@ import {
   styled,
   List,
   ListItem,
+  Button,
 } from "@mui/material"
 import Logo from "../assets/dps.png"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
+import dpsButton from "../assets/dps_button.svg"
 
 const StyledTextfield = styled(TextField)({
   input: { color: "white" },
@@ -28,10 +30,8 @@ function Homepage() {
   const [repeatPasswordFocused, setRepeatPasswordFocused] =
     React.useState(false)
 
-  const [hasEnglishWords, setHasEnglishWords] = React.useState(true)
-
   const hasLength = password.length >= 8 && password.length <= 16
-  const hasLattinLetter = password.match(/[A-Za-z]/)
+  const hasLatinLetter = password.match(/[A-Za-z]/)
   const hasUpperCase = password.match(/[A-Z]/)
   const hasDigit = password.match(/[0-9]/)
   const hasSpecialChar = password.match(/[^A-Za-z0-9]/)
@@ -41,12 +41,13 @@ function Homepage() {
   }
 
   const containsEnglishWords = async (password: string) => {
-    const apiKey = import.meta.env.RAPID_API_KEY
+    const apiKey = import.meta.env.VITE_RAPID_API_KEY
     const words = password.match(/[A-Za-z]+/g) // Split the password into words
 
+    console.log(apiKey)
+
     if (!words) {
-      setHasEnglishWords(false) // No English words found in the password
-      return
+      return false
     }
 
     for (const word of words) {
@@ -65,23 +66,48 @@ function Homepage() {
 
         // If the API response indicates that the word exists, it's an English word
         if (response.data.results !== undefined) {
-          setHasEnglishWords(true)
-          return
+          console.log(`Word found: ${word}`)
+          return true
         }
       } catch (error) {
         // Handle API request error
-        console.error("Error checking English words:", error)
-        return false
+        if (
+          axios.isAxiosError(error) &&
+          (error as AxiosError).response?.status === 404
+        ) {
+          // 404 means the word is not found, it's not an error for our purpose
+          console.log(`Word not found: ${word}`)
+        } else {
+          // Handle other errors
+          console.error("Error checking English words:", error)
+          return true
+        }
       }
     }
-
-    setHasEnglishWords(false) // No English words found in the password
+    return false // No English words found in the password
   }
 
-  //   React.useEffect(() => {
-  //     containsEnglishWords(password)
-  //     console.log("Contains")
-  //   }, [password])
+  const validPassword = () => {
+    return (
+      hasLength &&
+      hasLatinLetter &&
+      hasUpperCase &&
+      hasDigit &&
+      hasSpecialChar &&
+      passwordsMatch()
+    )
+  }
+
+  const handleValidation = async () => {
+    const hasEnglishWords = await containsEnglishWords(password)
+
+    if (validPassword() && !hasEnglishWords) {
+      console.log(hasEnglishWords)
+      alert("Password is valid")
+    } else {
+      alert("Password is invalid")
+    }
+  }
 
   return (
     <Stack
@@ -94,15 +120,6 @@ function Homepage() {
         justifyContent: "center",
       }}
     >
-      <Typography
-        width={"fit-content"}
-        fontSize={"50px"}
-        textAlign={"center"}
-        color={"#b1448b"}
-        fontWeight={"bold"}
-      >
-        Password Validator
-      </Typography>
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -133,15 +150,6 @@ function Homepage() {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setPassword(event.target.value)
           }}
-          error={
-            (passwordFocused || password.length > 0) &&
-            (!hasLength ||
-              !hasLattinLetter ||
-              !hasUpperCase ||
-              !hasDigit ||
-              !hasSpecialChar ||
-              hasEnglishWords)
-          }
           onFocus={() => {
             setPasswordFocused(true)
           }}
@@ -204,17 +212,17 @@ function Homepage() {
             }}
           >
             <Typography color={hasLength ? "green" : "red"}>
-              Password must be at between 8 and 16 characters long
+              Password must be between 8 and 16 characters long
             </Typography>
           </ListItem>
           <ListItem
             sx={{
               display: "list-item",
-              "::marker": { color: hasLattinLetter ? "green" : "red" },
+              "::marker": { color: hasLatinLetter ? "green" : "red" },
               px: 0,
             }}
           >
-            <Typography color={hasLattinLetter ? "green" : "red"}>
+            <Typography color={hasLatinLetter ? "green" : "red"}>
               Password must contain letters of the latin alphabet
             </Typography>
           </ListItem>
@@ -251,21 +259,26 @@ function Homepage() {
               Password must contain at least one special character{" "}
             </Typography>
           </ListItem>
-          <ListItem
-            sx={{
-              display: "list-item",
-              "::marker": {
-                color: hasEnglishWords ? "red" : "green",
-              },
-              px: 0,
-            }}
-          >
-            <Typography color={hasEnglishWords ? "red" : "green"}>
-              Password should not contain full English words
-            </Typography>
-          </ListItem>
         </List>
       </Box>
+      <Box
+        component={"img"}
+        sx={{
+          borderRadius: 1.5,
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "transform 0.3s ease-in-out",
+          "&:hover": {
+            transform: "scale(1.2)",
+          },
+          cursor: validPassword() ? "pointer" : "default",
+          filter: validPassword() ? "none" : "grayscale(100%)",
+        }}
+        p={1}
+        src={dpsButton}
+        alt="Validate Password"
+        onClick={validPassword() ? handleValidation : undefined}
+      />
     </Stack>
   )
 }
