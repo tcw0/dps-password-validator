@@ -1,15 +1,13 @@
 import React from "react"
-import { Box, Stack, List } from "@mui/material"
+import { Box, Stack, List, ListItem, Typography } from "@mui/material"
 import Logo from "../assets/dps.png"
 import axios, { AxiosError } from "axios"
 import dpsButton from "../assets/dps_button.svg"
 import PasswordStrength, {
   PasswordStrengthEnum,
 } from "../components/PasswordStrength"
-import {
-  StyledListItemWithTypography,
-  StyledTextfield,
-} from "../components/StyledComponents"
+import { StyledTextfield } from "../components/StyledComponents"
+import { SnackbarContext } from "../contexts/SnackbarContext"
 
 function Homepage() {
   const [password, setPassword] = React.useState("")
@@ -18,6 +16,8 @@ function Homepage() {
   const [passwordFocused, setPasswordFocused] = React.useState(false)
   const [repeatPasswordFocused, setRepeatPasswordFocused] =
     React.useState(false)
+
+  const { showSnackBarWithMessage } = React.useContext(SnackbarContext)
 
   const hasLength = password.length >= 8 && password.length <= 16
   const hasLatinLetter = password.match(/[A-Za-z]/)
@@ -54,7 +54,7 @@ function Homepage() {
         console.log(response.data)
 
         // If the API response indicates that the word exists, it's an English word
-        if (response.data.results !== undefined) {
+        if (response.data) {
           console.log(`Word found: ${word}`)
           return true
         }
@@ -85,9 +85,9 @@ function Homepage() {
 
     if (validPassword() && !hasEnglishWords) {
       console.log(hasEnglishWords)
-      alert("Password is valid")
+      showSnackBarWithMessage("Password is valid", "success")
     } else {
-      alert("Password is invalid")
+      showSnackBarWithMessage("Password is invalid", "error")
     }
   }
 
@@ -146,6 +146,7 @@ function Homepage() {
           p={1}
           src={Logo}
           width={"80%"}
+          mb={2}
         />
         <StyledTextfield
           label="Password"
@@ -215,18 +216,39 @@ function Homepage() {
         <PasswordStrength passwordStrength={passwordStrength()} />
 
         <List sx={{ listStyleType: "disc", pl: 2 }}>
-          <StyledListItemWithTypography
-            hasIndicator={hasLength}
-            text="Password must be between 8 and 16 characters long"
-          />
-          <StyledListItemWithTypography
-            hasIndicator={hasLatinLetter}
-            text="Password must contain letters of the latin alphabet"
-          />
-          <StyledListItemWithTypography
-            hasIndicator={hasDigit}
-            text="Password must contain at least one digit"
-          />
+          <ListItem
+            sx={{
+              display: "list-item",
+              "::marker": { color: hasLength ? "green" : "red" },
+              px: 0,
+            }}
+          >
+            <Typography color={hasLength ? "green" : "red"}>
+              Password must be between 8 and 16 characters long
+            </Typography>
+          </ListItem>
+          <ListItem
+            sx={{
+              display: "list-item",
+              "::marker": { color: hasLatinLetter ? "green" : "red" },
+              px: 0,
+            }}
+          >
+            <Typography color={hasLatinLetter ? "green" : "red"}>
+              Password must contain letters of the latin alphabet
+            </Typography>
+          </ListItem>
+          <ListItem
+            sx={{
+              display: "list-item",
+              "::marker": { color: hasDigit ? "green" : "red" },
+              px: 0,
+            }}
+          >
+            <Typography color={hasDigit ? "green" : "red"}>
+              Password must contain at least one digit
+            </Typography>
+          </ListItem>
         </List>
         <Box
           component={"img"}

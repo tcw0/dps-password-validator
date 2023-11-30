@@ -4,12 +4,15 @@ import App from "./App.tsx"
 import "./index.css"
 import { BrowserRouter } from "react-router-dom"
 import { CssBaseline } from "@mui/material"
+import { SnackbarContextProvider } from "./contexts/SnackbarContext.tsx"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <CssBaseline />
-      <App />
+      <SnackbarContextProvider>
+        <CssBaseline />
+        <App />
+      </SnackbarContextProvider>
     </BrowserRouter>
   </React.StrictMode>
 )
