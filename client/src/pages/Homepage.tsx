@@ -10,6 +10,7 @@ import {
   ListItem,
 } from "@mui/material"
 import Logo from "../assets/dps.png"
+import axios from "axios"
 
 const StyledTextfield = styled(TextField)({
   input: { color: "white" },
@@ -27,45 +28,60 @@ function Homepage() {
   const [repeatPasswordFocused, setRepeatPasswordFocused] =
     React.useState(false)
 
+  const [hasEnglishWords, setHasEnglishWords] = React.useState(true)
+
   const hasLength = password.length >= 8 && password.length <= 16
   const hasLattinLetter = password.match(/[A-Za-z]/)
   const hasUpperCase = password.match(/[A-Z]/)
   const hasDigit = password.match(/[0-9]/)
   const hasSpecialChar = password.match(/[^A-Za-z0-9]/)
 
-  const passwordRules = () => {
-    return (
-      <Box width={"fit-content"}>
-        {!hasLength && (
-          <Typography>
-            Password must be between 8 and 16 characters long
-          </Typography>
-        )}
-        {!hasLattinLetter && (
-          <Typography>
-            Password must contain at least one lowercase letter
-          </Typography>
-        )}
-        {!hasUpperCase && (
-          <Typography>
-            Password must contain at least one uppercase letter
-          </Typography>
-        )}
-        {!hasDigit && (
-          <Typography>Password must contain at least one digit</Typography>
-        )}
-        {!hasSpecialChar && (
-          <Typography>
-            Password must contain at least one special character{" "}
-          </Typography>
-        )}
-      </Box>
-    )
-  }
-
   const passwordsMatch = () => {
     return repeatedPassword === password
   }
+
+  const containsEnglishWords = async (password: string) => {
+    const apiKey = import.meta.env.RAPID_API_KEY
+    const words = password.match(/[A-Za-z]+/g) // Split the password into words
+
+    if (!words) {
+      setHasEnglishWords(false) // No English words found in the password
+      return
+    }
+
+    for (const word of words) {
+      const options = {
+        method: "GET",
+        url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
+        headers: {
+          "X-RapidAPI-Key": apiKey,
+          "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com",
+        },
+      }
+
+      try {
+        const response = await axios.request(options)
+        console.log(response.data)
+
+        // If the API response indicates that the word exists, it's an English word
+        if (response.data.results !== undefined) {
+          setHasEnglishWords(true)
+          return
+        }
+      } catch (error) {
+        // Handle API request error
+        console.error("Error checking English words:", error)
+        return false
+      }
+    }
+
+    setHasEnglishWords(false) // No English words found in the password
+  }
+
+  //   React.useEffect(() => {
+  //     containsEnglishWords(password)
+  //     console.log("Contains")
+  //   }, [password])
 
   return (
     <Stack
@@ -120,10 +136,11 @@ function Homepage() {
           error={
             (passwordFocused || password.length > 0) &&
             (!hasLength ||
-              !hasLattinLetter||
+              !hasLattinLetter ||
               !hasUpperCase ||
               !hasDigit ||
-              !hasSpecialChar)
+              !hasSpecialChar ||
+              hasEnglishWords)
           }
           onFocus={() => {
             setPasswordFocused(true)
@@ -198,7 +215,7 @@ function Homepage() {
             }}
           >
             <Typography color={hasLattinLetter ? "green" : "red"}>
-              Password must contain at least one lowercase letter
+              Password must contain letters of the latin alphabet
             </Typography>
           </ListItem>
           <ListItem
@@ -232,6 +249,19 @@ function Homepage() {
           >
             <Typography color={hasSpecialChar ? "green" : "red"}>
               Password must contain at least one special character{" "}
+            </Typography>
+          </ListItem>
+          <ListItem
+            sx={{
+              display: "list-item",
+              "::marker": {
+                color: hasEnglishWords ? "red" : "green",
+              },
+              px: 0,
+            }}
+          >
+            <Typography color={hasEnglishWords ? "red" : "green"}>
+              Password should not contain full English words
             </Typography>
           </ListItem>
         </List>
